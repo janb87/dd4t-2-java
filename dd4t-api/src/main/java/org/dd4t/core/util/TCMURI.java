@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 public class TCMURI implements Serializable {
 
     public static final String URI_NAMESPACE = "tcm:";
+    public static final String URI_NAMESPACE_ISH = "ish:";
     protected static final String SEPARATOR = "-";
     protected static final String DELIM_VERSION = "v";
 
@@ -50,7 +51,7 @@ public class TCMURI implements Serializable {
     }
 
     public static boolean isValid(String tcmUri) {
-        return tcmUri != null && tcmUri.startsWith(URI_NAMESPACE);
+        return tcmUri != null && (tcmUri.startsWith(URI_NAMESPACE) || tcmUri.startsWith(URI_NAMESPACE_ISH)) ;
     }
 
     protected void load(String uriString) throws ParseException {
@@ -58,8 +59,9 @@ public class TCMURI implements Serializable {
             int namespaceLength = URI_NAMESPACE.length();
             int uriStringLength = uriString.length();
             int currentPosition = uriStringLength;
-            if ((uriStringLength < namespaceLength) || (!uriString.startsWith(URI_NAMESPACE))) {
-                throw new ParseException("URI string " + uriString + " does not start with " + URI_NAMESPACE, currentPosition);
+            if ((uriStringLength < namespaceLength) || (!uriString.startsWith(URI_NAMESPACE) && !uriString.startsWith(URI_NAMESPACE_ISH))) {
+                throw new ParseException("URI string " + uriString + " does not start with " + URI_NAMESPACE  +
+                        " or " + URI_NAMESPACE_ISH, currentPosition);
             }
 
             String uri = uriString.substring(namespaceLength, uriStringLength);
