@@ -47,6 +47,9 @@ public class ComponentPresentationImpl extends AbstractModel implements Componen
     @JsonProperty("IsDynamic")
     private boolean isDynamic;
 
+    @JsonProperty("dynamic")
+    private boolean dynamic;
+
     @JsonProperty("RenderedContent")
     private String renderedContent;
 
@@ -58,6 +61,9 @@ public class ComponentPresentationImpl extends AbstractModel implements Componen
 
 	@JsonIgnore
 	private String rawComponentContent;
+
+	@JsonProperty("Conditions")
+	private String[] conditions;
 
     /**
      * Get the component

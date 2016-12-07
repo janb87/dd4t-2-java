@@ -119,7 +119,7 @@ public interface Component extends RepositoryLocalItem {
 	String getEclId();
 
 	public enum ComponentType {
-		Multimedia(0), Normal(1), UNKNOWN(-1);
+		Multimedia(0), NORMAL(1), UNKNOWN(-1);
 		private final int value;
 
 		ComponentType (int value) {
