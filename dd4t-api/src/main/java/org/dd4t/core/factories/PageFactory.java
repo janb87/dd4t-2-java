@@ -43,6 +43,15 @@ public interface PageFactory extends Factory {
     Page findPageByUrl(String url, int publicationId) throws FactoryException;
 
     /**
+     * Find page by its Tcm Id.
+     *
+     * @param tcmId the Tcm Id of the page
+     * @return a Page Object
+     * @throws FactoryException
+     */
+    Page findPageByTcmId(String tcmId) throws FactoryException;
+
+    /**
      * Find the source of the Page by Url. The url and publication id are specified.
      *
      * @return The page source as string

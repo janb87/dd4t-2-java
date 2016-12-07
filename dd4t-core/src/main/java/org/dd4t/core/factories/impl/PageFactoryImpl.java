@@ -173,6 +173,56 @@ public class PageFactoryImpl extends BaseFactory implements PageFactory {
 		return page;
 	}
 
+	/**
+	 * Find page by its Tcm Id.
+	 *
+	 * @param tcmId the Tcm Id of the page
+	 * @return a Page Object
+	 * @throws FactoryException
+	 */
+	public Page findPageByTcmId(String tcmId) throws FactoryException {
+		LOG.debug("Enter findPageByTcmId with uri: {}", tcmId);
+
+		String cacheKey = "PSE-" + tcmId;
+
+		CacheElement<Page> cacheElement = cacheProvider.loadPayloadFromLocalCache(cacheKey);
+		Page page;
+
+		if (cacheElement.isExpired()) {
+			synchronized (cacheElement) {
+				if (cacheElement.isExpired()) {
+					cacheElement.setExpired(false);
+					String pageSource;
+
+					try {
+						pageSource = pageProvider.getPageContentById(tcmId);
+					} catch (ParseException e) {
+						LOG.error(e.getLocalizedMessage(), e);
+						throw new SerializationException(e);
+					}
+
+					if (StringUtils.isEmpty(pageSource)) {
+						cacheElement.setPayload(null);
+						cacheProvider.storeInItemCache(cacheKey, cacheElement);
+						throw new ItemNotFoundException("Unable to find page by id " + tcmId);
+					}
+
+					page = deserialize(pageSource, PageImpl.class);
+					cacheElement.setPayload(page);
+
+					cacheProvider.storeInItemCache(cacheKey, cacheElement);
+				} else {
+					LOG.debug("Return a page with uri: {} from cache", tcmId);
+					page = cacheElement.getPayload();
+				}
+			}
+		} else {
+			LOG.debug("Return page with uri: {} from cache", tcmId);
+			page = cacheElement.getPayload();
+		}
+
+		return page;
+	}
 
 	/**
 	 * This method explicitly used for querying the Broker Storage
